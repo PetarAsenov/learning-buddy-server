@@ -21,6 +21,18 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      image_Url: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      description: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      role: {
+        type: Sequelize.ENUM,
+        values: ['teacher','student']
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
