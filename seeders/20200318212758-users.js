@@ -48,9 +48,9 @@ module.exports = {
         password: bcrypt.hashSync("test1234", SALT_ROUNDS),
         createdAt: new Date(),
         updatedAt: new Date(),
-        // image_Url: '',
-        // description: 'I am a test teacher',
-        // role: 'teacher'
+        image_Url: '',
+        description: 'I am a test teacher',
+        role: 'teacher'
       }),
       User.upsert({
         id:2,
@@ -59,9 +59,9 @@ module.exports = {
         password: bcrypt.hashSync("test1234", SALT_ROUNDS),
         createdAt: new Date(),
         updatedAt: new Date(),
-        // image_Url: '',
-        // description: 'I am a dummy teacher',
-        // role: 'teacher'
+        image_Url: '',
+        description: 'I am a dummy teacher',
+        role: 'teacher'
       }),
       User.upsert({
         id:3,
@@ -70,9 +70,9 @@ module.exports = {
         password: bcrypt.hashSync("test1234", SALT_ROUNDS),
         createdAt: new Date(),
         updatedAt: new Date(),
-        // image_Url: '',
-        // description: 'I am a maths teacher',
-        // role: 'teacher'
+        image_Url: '',
+        description: 'I am a maths teacher',
+        role: 'teacher'
       }),
       User.upsert({
         id:4,
@@ -81,9 +81,9 @@ module.exports = {
         password: bcrypt.hashSync("test1234", SALT_ROUNDS),
         createdAt: new Date(),
         updatedAt: new Date(),
-        // image_Url: '',
-        // description: 'I have a lot of free time',
-        // role: 'student'
+        image_Url: '',
+        description: 'I have a lot of free time',
+        role: 'student'
       }),
       User.upsert({
         id:5,
@@ -92,9 +92,9 @@ module.exports = {
         password: bcrypt.hashSync("test1234", SALT_ROUNDS),
         createdAt: new Date(),
         updatedAt: new Date(),
-        // image_Url: '',
-        // description: 'I am the smartest',
-        // role: 'student'
+        image_Url: '',
+        description: 'I am the smartest',
+        role: 'student'
       }),
       User.upsert({
         id:6,
@@ -103,9 +103,9 @@ module.exports = {
         password: bcrypt.hashSync("test1234", SALT_ROUNDS),
         createdAt: new Date(),
         updatedAt: new Date(),
-        // image_Url: '',
-        // description: 'I know everything',
-        // role: 'student'
+        image_Url: '',
+        description: 'I know everything',
+        role: 'student'
       })
     ]);
 
