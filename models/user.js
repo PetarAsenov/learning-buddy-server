@@ -32,9 +32,10 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   user.associate = function (models) {
-    user.hasMany(models.session);
-    user.hasMany(models.participant);
-    user.hasMany(models.review);
+    user.hasMany(models.session, { foreignKey: "teacher_id" });
+    user.hasMany(models.participant, {foreignKey: 'participant_id'});
+    user.hasMany(models.review, {foreignKey: 'reviewer_id'});
+    user.hasMany(models.review, {foreignKey: 'teacher_id'});
     user.belongsToMany(models.session, {
       through: "orderDetail",
       foreignKey: "participant_id",

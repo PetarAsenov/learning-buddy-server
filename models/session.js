@@ -20,32 +20,12 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.DATE,
       },
-      subject_id: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-        reference: {
-          model: "subject",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
-      },
-      teacher_id: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-        reference: {
-          model: "user",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
-      },
     },
     {}
   );
   session.associate = function (models) {
-    session.hasMany(models.participant);
-    session.belongsTo(models.user, { foreignKey: "teacher_id" });
+    session.hasMany(models.participant, {foreignKey: 'session_id'});
+    session.belongsTo(models.user, { foreignKey: "teacher_id", as: 'teacher' });
     session.belongsTo(models.subject, { foreignKey: "subject_id" });
     session.belongsToMany(models.user, {
       through: "orderDetail",
