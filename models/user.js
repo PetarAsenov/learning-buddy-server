@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
   user.associate = function (models) {
     user.hasMany(models.session);
     user.hasMany(models.participant);
+    user.hasMany(models.review);
     user.belongsToMany(models.session, {
       through: "orderDetail",
       foreignKey: "participant_id",

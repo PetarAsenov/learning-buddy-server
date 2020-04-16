@@ -42,16 +42,70 @@ module.exports = {
      */
     const users = await Promise.all([
       User.upsert({
-        id: 1,
+        id:1,
         name: "testuser",
         email: "test@test.com",
-        password: bcrypt.hashSync("test1234", SALT_ROUNDS)
+        password: bcrypt.hashSync("test1234", SALT_ROUNDS),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        // image_Url: '',
+        // description: 'I am a test teacher',
+        // role: 'teacher'
       }),
       User.upsert({
-        id: 2,
+        id:2,
         name: "dummy",
         email: "dummy@dummy.com",
-        password: bcrypt.hashSync("dummy1234", SALT_ROUNDS)
+        password: bcrypt.hashSync("test1234", SALT_ROUNDS),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        // image_Url: '',
+        // description: 'I am a dummy teacher',
+        // role: 'teacher'
+      }),
+      User.upsert({
+        id:3,
+        name: "Maths teacher",
+        email: "math@math.com",
+        password: bcrypt.hashSync("test1234", SALT_ROUNDS),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        // image_Url: '',
+        // description: 'I am a maths teacher',
+        // role: 'teacher'
+      }),
+      User.upsert({
+        id:4,
+        name: "Crazy kid",
+        email: "kid@kid.com",
+        password: bcrypt.hashSync("test1234", SALT_ROUNDS),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        // image_Url: '',
+        // description: 'I have a lot of free time',
+        // role: 'student'
+      }),
+      User.upsert({
+        id:5,
+        name: "Smart pupil",
+        email: "pupil@pupil.com",
+        password: bcrypt.hashSync("test1234", SALT_ROUNDS),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        // image_Url: '',
+        // description: 'I am the smartest',
+        // role: 'student'
+      }),
+      User.upsert({
+        id:6,
+        name: "Donald",
+        email: "donald@donald.com",
+        password: bcrypt.hashSync("test1234", SALT_ROUNDS),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        // image_Url: '',
+        // description: 'I know everything',
+        // role: 'student'
       })
     ]);
 
