@@ -3,6 +3,10 @@ const { Router } = require("express");
 const { toJWT } = require("../auth/jwt");
 const authMiddleware = require("../auth/middleware");
 const User = require("../models/").user;
+const Session = require("../models/").session;
+const Subject = require("../models/").subject;
+const Review = require("../models/").review;
+
 const { SALT_ROUNDS } = require("../config/constants");
 
 const router = new Router();
@@ -21,7 +25,7 @@ router.post("/login", async (req, res, next) => {
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(400).send({
-        message: "User with that email not found or password incorrect"
+        message: "User with that email not found or password incorrect",
       });
     }
 
@@ -35,16 +39,21 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/signup", async (req, res) => {
-  const { email, password, name } = req.body;
-  if (!email || !password || !name) {
-    return res.status(400).send("Please provide an email, password and a name");
+  const { email, password, name, image_Url, description, role } = req.body;
+  if (!email || !password || !name || !role) {
+    return res
+      .status(400)
+      .send("Please provide an email, password, name, and role");
   }
 
   try {
     const newUser = await User.create({
       email,
       password: bcrypt.hashSync(password, SALT_ROUNDS),
-      name
+      name,
+      image_Url,
+      description,
+      role,
     });
 
     delete newUser.dataValues["password"]; // don't send back the password hash
@@ -70,6 +79,23 @@ router.get("/me", authMiddleware, async (req, res) => {
   // don't send back the password hash
   delete req.user.dataValues["password"];
   res.status(200).send({ ...req.user.dataValues });
+});
+
+router.get("/myprofile", authMiddleware, async (req, res) => {
+  const id = req.user.id;
+  const myProfile = await User.findByPk(id, {
+    attributes: ["id","name", "email", "image_Url", "description", "role"],
+    include: [
+      { model: Session, as: "my-sessions" },
+      {
+        model: Session,
+        as: "my-sessions",
+        include: [{ model: Subject, attributes: ["name"] }],
+      },
+      { model: Review, as: "received-reviews" },
+    ],
+  });
+  res.status(200).send({ myProfile });
 });
 
 module.exports = router;
