@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     session.belongsTo(models.user, { foreignKey: "teacher_id", as: 'teacher' });
     session.belongsTo(models.subject, { foreignKey: "subject_id" });
     session.belongsToMany(models.user, {
-      through: "orderDetail",
+      through: "participant",
       foreignKey: "session_id",
     });
   };
