@@ -4,6 +4,7 @@ const Op = db.Sequelize.Op;
 const Session = require("../models/").session;
 const Review = require("../models/").review;
 const User = require("../models/").user;
+const Subject = require("../models/").subject;
 const auth = require("../auth/middleware");
 
 const router = new Router();
@@ -16,7 +17,11 @@ router.get("/teachers", async (req, res) => {
     attributes: ["id", "name", "email", "image_Url", "description", "role"],
     include: [
       { model: Session, as: "my-sessions" },
-      Session,
+      {
+        model: Session,
+        as: "my-sessions",
+        include: [{ model: Subject, attributes: ["name"] }],
+      },
       { model: Review, as: "received-reviews" },
     ],
   });
@@ -30,7 +35,11 @@ router.get("/teacher/:id", async (req, res) => {
   const teacherDetails = await User.findByPk(id, {
     attributes: ["id", "name", "email", "image_Url", "description", "role"],
     include: [
-      { model: Session, as: "my-sessions" },
+      {
+        model: Session,
+        as: "my-sessions",
+        include: [{ model: Subject, attributes: ["name"] }],
+      },
       Session,
       { model: Review, as: "received-reviews" },
     ],

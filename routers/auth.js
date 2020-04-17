@@ -4,7 +4,7 @@ const { toJWT } = require("../auth/jwt");
 const authMiddleware = require("../auth/middleware");
 const User = require("../models/").user;
 const Session = require("../models/").session;
-const Participant = require("../models/").participant;
+const Subject = require("../models/").subject;
 const Review = require("../models/").review;
 
 const { SALT_ROUNDS } = require("../config/constants");
@@ -87,7 +87,11 @@ router.get("/myprofile", authMiddleware, async (req, res) => {
     attributes: ["id","name", "email", "image_Url", "description", "role"],
     include: [
       { model: Session, as: "my-sessions" },
-      Session,
+      {
+        model: Session,
+        as: "my-sessions",
+        include: [{ model: Subject, attributes: ["name"] }],
+      },
       { model: Review, as: "received-reviews" },
     ],
   });
