@@ -39,11 +39,11 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/signup", async (req, res) => {
-  const { email, password, name, image_Url, description, role } = req.body;
+  const { email, password, name, role } = req.body;
   if (!email || !password || !name || !role) {
     return res
       .status(400)
-      .send("Please provide an email, password, name, and role");
+      .send({message: "Please provide email, password, name, and role"});
   }
 
   try {
@@ -51,8 +51,6 @@ router.post("/signup", async (req, res) => {
       email,
       password: bcrypt.hashSync(password, SALT_ROUNDS),
       name,
-      image_Url,
-      description,
       role,
     });
 
