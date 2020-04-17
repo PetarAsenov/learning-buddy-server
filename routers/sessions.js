@@ -50,11 +50,69 @@ router.delete("/session/:id", async (req, res) => {
   res.send({ message: "Session was deleted" });
 });
 
+router.post("/session/:id/book", auth, async (req, res) => {
+  const { id } = req.params;
+
+  const participant_id = req.user.id;
+
+  const participantCheck = await Participant.findOne({
+    where: { session_id: id, participant_id },
+  });
+
+  if (participantCheck !== null) {
+    return res
+      .status(403)
+      .send({ message: "You've already booked this session" });
+  }
+
+  try {
+    const participant = await Participant.create({
+      session_id: id,
+      participant_id,
+    });
+
+    return res
+      .status(201)
+      .send({ message: "You booked the session, enjoy!", participant });
+  } catch (error) {
+    return res.status(400).send({ message: "Something went wrong, sorry" });
+  }
+});
+
+router.delete("/session/:id/book", auth, async (req, res) => {
+  const { id } = req.params;
+
+  const participant_id = req.user.id;
+
+  const participantCheck = await Participant.findOne({
+    where: { session_id: id, participant_id },
+  });
+
+  if (participantCheck === null) {
+    return res
+      .status(403)
+      .send({ message: "You are not registered for this session" });
+  }
+
+  try {
+    await participantCheck.destroy();
+    res.send({ message: "You unbooked this session" });
+  } catch (error) {
+    return res.status(400).send({ message: "Something went wrong, sorry" });
+  }
+});
+
 router.patch("/session/:id", async (req, res) => {
   const { id } = req.params;
   const session = await Session.findByPk(id);
   const { title, description, start_date, end_date, subject_id } = req.body;
-  await session.update({ title, description, start_date, end_date, subject_id });
+  await session.update({
+    title,
+    description,
+    start_date,
+    end_date,
+    subject_id,
+  });
   res.send({ session });
 });
 
