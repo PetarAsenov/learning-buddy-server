@@ -84,7 +84,7 @@ router.get("/me", authMiddleware, async (req, res) => {
 router.get("/myprofile", authMiddleware, async (req, res) => {
   const id = req.user.id;
   const myProfile = await User.findByPk(id, {
-    attributes: ["name", "email", "image_Url", "description", "role"],
+    attributes: ["id","name", "email", "image_Url", "description", "role"],
     include: [
       { model: Session, as: "my-sessions" },
       Session,

@@ -154,6 +154,9 @@ app.use("/", authRouter);
 const sessionRouter = require("./routers/sessions");
 app.use("/", sessionRouter);
 
+const teacherRouter = require("./routers/teachers");
+app.use("/", teacherRouter);
+
 // Listen for connections on specified port (default is port 4000)
 const { PORT } = require("./config/constants");
 

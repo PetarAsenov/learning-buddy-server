@@ -43,8 +43,17 @@ router.get("/session/:id", async (req, res) => {
   res.status(200).send(sessionDetails);
 });
 
-router.delete("/session/:id", async (req, res) => {
+router.delete("/session/:id",auth, async (req, res) => {
   const { id } = req.params;
+  const {teacher_id} = req.body;
+  const reqId = req.user.id
+
+  if (teacher_id !== req.user.id) {
+    return res
+      .status(403)
+      .send({ message: "You are not authorized to delete this session",reqId, teacher_id});
+  }
+
 
   await Session.destroy({ where: { id: id } });
   res.send({ message: "Session was deleted" });
