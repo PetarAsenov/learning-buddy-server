@@ -54,7 +54,11 @@ router.post("/teacher/:id/review", auth, async (req, res) => {
   const reviewer_id = req.user.id;
 
   try {
+    const idArray = await Review.findAll().map((r) => r.id);
+    const maxId = Math.max(...idArray);
+
     const review = await Review.create({
+      id: maxId + 1,
       rate,
       comment,
       teacher_id: id,

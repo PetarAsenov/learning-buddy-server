@@ -6,16 +6,18 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const sessions = await Promise.all([
       Session.upsert({
+        id: 1,
         title: 'React Hooks',
         description: 'Join and see the best from React Hooks',
         start_date: '2020-04-16 10:00:00+00',
         end_date: '2020-04-16 11:30:00+00',
-        subject_id: 3,
+        subject_id: 2,
         teacher_id: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
       }),
       Session.upsert({
+        id: 2,
         title: 'Geometry',
         description: 'Triangles',
         start_date: '2020-04-17 10:00:00+00',
@@ -26,6 +28,7 @@ module.exports = {
         updatedAt: new Date(),
       }),
       Session.upsert({
+        id: 3,
         title: 'Dutch for dummies',
         description: 'Goedemorgen',
         start_date: '2020-04-18 9:00:00+00',
@@ -36,11 +39,12 @@ module.exports = {
         updatedAt: new Date(),
       }),
       Session.upsert({
+        id: 4,
         title: 'CSS',
         description: 'Flexbox in depth',
         start_date: '2020-04-19 10:00:00+00',
         end_date: '2020-04-19 11:30:00+00',
-        subject_id: 3,
+        subject_id: 2,
         teacher_id: 3,
         createdAt: new Date(),
         updatedAt: new Date(),

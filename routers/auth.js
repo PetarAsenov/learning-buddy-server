@@ -47,7 +47,11 @@ router.post("/signup", async (req, res) => {
   }
 
   try {
+    const idArray = await User.findAll().map(user => user.id)
+    const maxId = Math.max(...idArray)
+
     const newUser = await User.create({
+      id:maxId + 1,
       email,
       password: bcrypt.hashSync(password, SALT_ROUNDS),
       name,
