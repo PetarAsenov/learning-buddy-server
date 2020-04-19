@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const session = sequelize.define(
     "session",
     {
-      title: DataTypes.STRING,
+      id: { type: DataTypes.INTEGER, primaryKey: true },
       title: {
         allowNull: false,
         type: DataTypes.STRING,
@@ -24,8 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   session.associate = function (models) {
-    session.hasMany(models.participant, {foreignKey: 'session_id'});
-    session.belongsTo(models.user, { foreignKey: "teacher_id", as: 'teacher' });
+    session.hasMany(models.participant, { foreignKey: "session_id" });
+    session.belongsTo(models.user, { foreignKey: "teacher_id", as: "teacher" });
     session.belongsTo(models.subject, { foreignKey: "subject_id" });
     session.belongsToMany(models.user, {
       through: "participant",

@@ -111,7 +111,7 @@ router.delete("/session/:id/book", auth, async (req, res) => {
 
   try {
     await participantCheck.destroy();
-    res.send({ message: "You unbooked this session" });
+    res.send({ message: "You unbooked this session", participantCheck });
   } catch (error) {
     return res.status(400).send({ message: "Something went wrong, sorry" });
   }
