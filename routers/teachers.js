@@ -14,17 +14,17 @@ router.get("/teachers", async (req, res) => {
   const condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
   const teachers = await User.findAll({
     where: { ...condition, role: "teacher" },
-    order: [[{model: Session, as: "my-sessions"},"start_date", "DESC"],
+    order: [[{model: Session, as: "mySessions"},"start_date", "DESC"],
     [{model: Session},"start_date", "DESC"]],
     attributes: ["id", "name", "email", "image_Url", "description", "role"],
     include: [
       {
         model: Session,
-        as: "my-sessions",
+        as: "mySessions",
         include: [{ model: Subject, attributes: ["name"] }],
       },
       { model: Session},
-      { model: Review, as: "received-reviews" },
+      { model: Review, as: "receivedReviews" },
     ],
   });
 
@@ -36,16 +36,16 @@ router.get("/teacher/:id", async (req, res) => {
 
   const teacherDetails = await User.findByPk(id, {
     attributes: ["id", "name", "email", "image_Url", "description", "role"],
-    order: [[{model: Session, as: "my-sessions"},"start_date", "DESC"],
+    order: [[{model: Session, as: "mySessions"},"start_date", "DESC"],
     [{model: Session},"start_date", "DESC"]],
     include: [
       {
         model: Session,
-        as: "my-sessions",
+        as: "mySessions",
         include: [{ model: Subject, attributes: ["name"] }],
       },
       { model: Session},
-      { model: Review, as: "received-reviews" },
+      { model: Review, as: "receivedReviews" },
     ],
   });
   res.status(200).send(teacherDetails);

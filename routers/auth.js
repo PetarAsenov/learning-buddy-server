@@ -90,16 +90,15 @@ router.get("/myprofile", authMiddleware, async (req, res) => {
   const myProfile = await User.findByPk(id, {
     attributes: ["id","name", "email", "image_Url", "description", "role"],
     include: [
-      { model: Session, as: "my-sessions" },
+      { model: Session, as: "mySessions" },
       {
         model: Session,
-        as: "my-sessions",
         include: [{ model: Subject, attributes: ["name"] }],
       },
-      { model: Review, as: "received-reviews" },
+      { model: Review, as: "receivedReviews" },
     ],
   });
-  res.status(200).send({ myProfile });
+  res.status(200).send({ ...myProfile.dataValues });
 });
 
 module.exports = router;

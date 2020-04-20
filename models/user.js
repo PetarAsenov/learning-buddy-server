@@ -35,16 +35,16 @@ module.exports = (sequelize, DataTypes) => {
   user.associate = function (models) {
     user.hasMany(models.session, {
       foreignKey: "teacher_id",
-      as: "my-sessions",
+      as: "mySessions",
     });
     user.hasMany(models.participant, { foreignKey: "participant_id" });
     user.hasMany(models.review, {
       foreignKey: "reviewer_id",
-      as: "sent-reviews",
+      as: "sentReviews",
     });
     user.hasMany(models.review, {
       foreignKey: "teacher_id",
-      as: "received-reviews",
+      as: "receivedReviews",
     });
     user.belongsToMany(models.session, {
       through: "participant",
