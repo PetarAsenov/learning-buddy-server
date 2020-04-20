@@ -14,6 +14,7 @@ router.get("/sessions", async (req, res) => {
   const condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
   const sessions = await Session.findAll({
     where: condition,
+    order: [["start_date", "DESC"]],
     include: [
       { model: User, as: "teacher", attributes: ["name"] },
       { model: Subject, attributes: ["name"] },
@@ -49,13 +50,11 @@ router.delete("/session/:id", auth, async (req, res) => {
   const reqId = req.user.id;
 
   if (teacher_id !== req.user.id) {
-    return res
-      .status(403)
-      .send({
-        message: "You are not authorized to delete this session",
-        reqId,
-        teacher_id,
-      });
+    return res.status(403).send({
+      message: "You are not authorized to delete this session",
+      reqId,
+      teacher_id,
+    });
   }
 
   await Session.destroy({ where: { id: id } });

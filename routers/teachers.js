@@ -14,14 +14,16 @@ router.get("/teachers", async (req, res) => {
   const condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
   const teachers = await User.findAll({
     where: { ...condition, role: "teacher" },
+    order: [[{model: Session, as: "my-sessions"},"start_date", "DESC"],
+    [{model: Session},"start_date", "DESC"]],
     attributes: ["id", "name", "email", "image_Url", "description", "role"],
     include: [
-      { model: Session, as: "my-sessions" },
       {
         model: Session,
         as: "my-sessions",
         include: [{ model: Subject, attributes: ["name"] }],
       },
+      { model: Session},
       { model: Review, as: "received-reviews" },
     ],
   });
@@ -34,13 +36,15 @@ router.get("/teacher/:id", async (req, res) => {
 
   const teacherDetails = await User.findByPk(id, {
     attributes: ["id", "name", "email", "image_Url", "description", "role"],
+    order: [[{model: Session, as: "my-sessions"},"start_date", "DESC"],
+    [{model: Session},"start_date", "DESC"]],
     include: [
       {
         model: Session,
         as: "my-sessions",
         include: [{ model: Subject, attributes: ["name"] }],
       },
-      Session,
+      { model: Session},
       { model: Review, as: "received-reviews" },
     ],
   });
