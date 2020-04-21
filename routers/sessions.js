@@ -14,6 +14,7 @@ router.get("/sessions", async (req, res) => {
   const condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
   const sessions = await Session.findAll({
     where: condition,
+    order: [["start_date", "DESC"]],
     include: [
       { model: User, as: "teacher", attributes: ["name"] },
       { model: Subject, attributes: ["name"] },
@@ -43,17 +44,18 @@ router.get("/session/:id", async (req, res) => {
   res.status(200).send(sessionDetails);
 });
 
-router.delete("/session/:id",auth, async (req, res) => {
+router.delete("/session/:id", auth, async (req, res) => {
   const { id } = req.params;
-  const {teacher_id} = req.body;
-  const reqId = req.user.id
+  const { teacher_id } = req.body;
+  const reqId = req.user.id;
 
   if (teacher_id !== req.user.id) {
-    return res
-      .status(403)
-      .send({ message: "You are not authorized to delete this session",reqId, teacher_id});
+    return res.status(403).send({
+      message: "You are not authorized to delete this session",
+      reqId,
+      teacher_id,
+    });
   }
-
 
   await Session.destroy({ where: { id: id } });
   res.send({ message: "Session was deleted" });
@@ -75,7 +77,10 @@ router.post("/session/:id/book", auth, async (req, res) => {
   }
 
   try {
+    const idArray = await Participant.findAll().map((p) => p.id);
+    const maxId = Math.max(...idArray);
     const participant = await Participant.create({
+      id: maxId + 1,
       session_id: id,
       participant_id,
     });
@@ -105,7 +110,7 @@ router.delete("/session/:id/book", auth, async (req, res) => {
 
   try {
     await participantCheck.destroy();
-    res.send({ message: "You unbooked this session" });
+    res.send({ message: "You unbooked this session", participantCheck });
   } catch (error) {
     return res.status(400).send({ message: "Something went wrong, sorry" });
   }
@@ -148,7 +153,11 @@ router.post("/sessions", auth, async (req, res) => {
   }
 
   try {
+    const idArray = await Session.findAll().map((s) => s.id);
+    const maxId = Math.max(...idArray);
+
     const session = await Session.create({
+      id: maxId + 1,
       title,
       description,
       start_date,
