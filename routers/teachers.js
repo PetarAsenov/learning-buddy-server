@@ -14,15 +14,17 @@ router.get("/teachers", async (req, res) => {
   const condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
   const teachers = await User.findAll({
     where: { ...condition, role: "teacher" },
+    order: [[{model: Session, as: "mySessions"},"start_date", "DESC"],
+    [{model: Session},"start_date", "DESC"]],
     attributes: ["id", "name", "email", "image_Url", "description", "role"],
     include: [
-      { model: Session, as: "my-sessions" },
       {
         model: Session,
-        as: "my-sessions",
+        as: "mySessions",
         include: [{ model: Subject, attributes: ["name"] }],
       },
-      { model: Review, as: "received-reviews" },
+      { model: Session},
+      { model: Review, as: "receivedReviews" },
     ],
   });
 
@@ -34,14 +36,16 @@ router.get("/teacher/:id", async (req, res) => {
 
   const teacherDetails = await User.findByPk(id, {
     attributes: ["id", "name", "email", "image_Url", "description", "role"],
+    order: [[{model: Session, as: "mySessions"},"start_date", "DESC"],
+    [{model: Session},"start_date", "DESC"]],
     include: [
       {
         model: Session,
-        as: "my-sessions",
+        as: "mySessions",
         include: [{ model: Subject, attributes: ["name"] }],
       },
-      Session,
-      { model: Review, as: "received-reviews" },
+      { model: Session},
+      { model: Review, as: "receivedReviews" },
     ],
   });
   res.status(200).send(teacherDetails);
@@ -54,7 +58,11 @@ router.post("/teacher/:id/review", auth, async (req, res) => {
   const reviewer_id = req.user.id;
 
   try {
+    const idArray = await Review.findAll().map((r) => r.id);
+    const maxId = Math.max(...idArray);
+
     const review = await Review.create({
+      id: maxId + 1,
       rate,
       comment,
       teacher_id: id,

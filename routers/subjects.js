@@ -17,6 +17,7 @@ router.get("/subjects/:id", async (req, res) => {
   const { id } = req.params;
 
   const subjectDetails = await Subject.findByPk(id, {
+    order: [[{model: Session},"start_date", "DESC"]],
     include: [{model: Session,
       include: [
         { model: User, as: "teacher", attributes: ["name"] },

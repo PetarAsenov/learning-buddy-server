@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const user = sequelize.define(
     "user",
     {
+      id: { type: DataTypes.INTEGER, primaryKey: true },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -32,10 +33,19 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   user.associate = function (models) {
-    user.hasMany(models.session, { foreignKey: "teacher_id", as: 'my-sessions' });
-    user.hasMany(models.participant, {foreignKey: 'participant_id'});
-    user.hasMany(models.review, {foreignKey: 'reviewer_id', as: 'sent-reviews'});
-    user.hasMany(models.review, {foreignKey: 'teacher_id', as: 'received-reviews'});
+    user.hasMany(models.session, {
+      foreignKey: "teacher_id",
+      as: "mySessions",
+    });
+    user.hasMany(models.participant, { foreignKey: "participant_id" });
+    user.hasMany(models.review, {
+      foreignKey: "reviewer_id",
+      as: "sentReviews",
+    });
+    user.hasMany(models.review, {
+      foreignKey: "teacher_id",
+      as: "receivedReviews",
+    });
     user.belongsToMany(models.session, {
       through: "participant",
       foreignKey: "participant_id",
