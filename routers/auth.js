@@ -99,4 +99,18 @@ router.get("/myprofile", authMiddleware, async (req, res) => {
   res.status(200).send({ ...myProfile.dataValues });
 });
 
+router.patch("/user/:id", authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findByPk(id);
+  const { image_Url, description } = req.body;
+  await user.update({
+    image_Url,
+    description,
+  });
+
+  delete user.dataValues["password"];
+  res.status(200).send({ ...user.dataValues });
+
+});
+
 module.exports = router;
