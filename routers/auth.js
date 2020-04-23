@@ -6,6 +6,7 @@ const User = require("../models/").user;
 const Session = require("../models/").session;
 const Subject = require("../models/").subject;
 const Review = require("../models/").review;
+const Participant = require("../models/").participant;
 
 const { SALT_ROUNDS } = require("../config/constants");
 
@@ -43,15 +44,15 @@ router.post("/signup", async (req, res) => {
   if (!email || !password || !name || !role) {
     return res
       .status(400)
-      .send({message: "Please provide email, password, name, and role"});
+      .send({ message: "Please provide email, password, name, and role" });
   }
 
   try {
-    const idArray = await User.findAll().map(user => user.id)
-    const maxId = Math.max(...idArray)
+    const idArray = await User.findAll().map((user) => user.id);
+    const maxId = Math.max(...idArray);
 
     const newUser = await User.create({
-      id:maxId + 1,
+      id: maxId + 1,
       email,
       password: bcrypt.hashSync(password, SALT_ROUNDS),
       name,
@@ -86,9 +87,16 @@ router.get("/me", authMiddleware, async (req, res) => {
 router.get("/myprofile", authMiddleware, async (req, res) => {
   const id = req.user.id;
   const myProfile = await User.findByPk(id, {
-    attributes: ["id","name", "email", "image_Url", "description", "role"],
+    attributes: ["id", "name", "email", "image_Url", "description", "role"],
     include: [
-      { model: Session, as: "mySessions" },
+      {
+        model: Session,
+        as: "mySessions",
+        include: {
+          model: Participant,
+          include: { model: User, as: "participant", attributes: ["name", "email"] },
+        },
+      },
       {
         model: Session,
         include: [{ model: Subject, attributes: ["name"] }],
@@ -110,7 +118,6 @@ router.patch("/user/:id", authMiddleware, async (req, res) => {
 
   delete user.dataValues["password"];
   res.status(200).send({ ...user.dataValues });
-
 });
 
 module.exports = router;
