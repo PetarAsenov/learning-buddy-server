@@ -20,7 +20,7 @@ router.get("/sessions", async (req, res) => {
       { model: Subject, attributes: ["name"] },
       {
         model: Participant,
-        include: { model: User, as: "participant", attributes: ["name"] },
+        include: { model: User, as: "participant", attributes: ["name","email"] },
       },
     ],
   });
@@ -37,7 +37,7 @@ router.get("/session/:id", async (req, res) => {
       { model: Subject, attributes: ["name"] },
       {
         model: Participant,
-        include: { model: User, as: "participant", attributes: ["name"] },
+        include: { model: User, as: "participant", attributes: ["name","email"] },
       },
     ],
   });
