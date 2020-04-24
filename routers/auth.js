@@ -101,7 +101,7 @@ router.get("/myprofile", authMiddleware, async (req, res) => {
         model: Session,
         include: [{ model: Subject, attributes: ["name"] }],
       },
-      { model: Review, as: "receivedReviews" },
+      { model: Review, as: "receivedReviews", include: [{ model: User, as: "reviewer", attributes: ["name"] }] },
     ],
   });
   res.status(200).send({ ...myProfile.dataValues });
