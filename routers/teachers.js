@@ -45,7 +45,7 @@ router.get("/teacher/:id", async (req, res) => {
         include: [{ model: Subject, attributes: ["name"] }],
       },
       { model: Session},
-      { model: Review, as: "receivedReviews" },
+      { model: Review, as: "receivedReviews", include: [{ model: User, as: "reviewer", attributes: ["name"] }] },
     ],
   });
   res.status(200).send(teacherDetails);
