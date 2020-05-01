@@ -3,6 +3,11 @@ const { Router } = require("express");
 const { toJWT } = require("../auth/jwt");
 const authMiddleware = require("../auth/middleware");
 const User = require("../models/").user;
+const Session = require("../models/").session;
+const Subject = require("../models/").subject;
+const Review = require("../models/").review;
+const Participant = require("../models/").participant;
+
 const { SALT_ROUNDS } = require("../config/constants");
 
 const router = new Router();
@@ -21,7 +26,7 @@ router.post("/login", async (req, res, next) => {
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(400).send({
-        message: "User with that email not found or password incorrect"
+        message: "User with that email not found or password incorrect",
       });
     }
 
@@ -35,16 +40,23 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/signup", async (req, res) => {
-  const { email, password, name } = req.body;
-  if (!email || !password || !name) {
-    return res.status(400).send("Please provide an email, password and a name");
+  const { email, password, name, role } = req.body;
+  if (!email || !password || !name || !role) {
+    return res
+      .status(400)
+      .send({ message: "Please provide email, password, name, and role" });
   }
 
   try {
+    const idArray = await User.findAll().map((user) => user.id);
+    const maxId = Math.max(...idArray);
+
     const newUser = await User.create({
+      id: maxId + 1,
       email,
       password: bcrypt.hashSync(password, SALT_ROUNDS),
-      name
+      name,
+      role,
     });
 
     delete newUser.dataValues["password"]; // don't send back the password hash
@@ -70,6 +82,42 @@ router.get("/me", authMiddleware, async (req, res) => {
   // don't send back the password hash
   delete req.user.dataValues["password"];
   res.status(200).send({ ...req.user.dataValues });
+});
+
+router.get("/myprofile", authMiddleware, async (req, res) => {
+  const id = req.user.id;
+  const myProfile = await User.findByPk(id, {
+    attributes: ["id", "name", "email", "image_Url", "description", "role"],
+    include: [
+      {
+        model: Session,
+        as: "mySessions",
+        include: {
+          model: Participant,
+          include: { model: User, as: "participant", attributes: ["name", "email"] },
+        },
+      },
+      {
+        model: Session,
+        include: [{ model: Subject, attributes: ["name"] }],
+      },
+      { model: Review, as: "receivedReviews", include: [{ model: User, as: "reviewer", attributes: ["name"] }] },
+    ],
+  });
+  res.status(200).send({ ...myProfile.dataValues });
+});
+
+router.patch("/user/:id", authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findByPk(id);
+  const { image_Url, description } = req.body;
+  await user.update({
+    image_Url,
+    description,
+  });
+
+  delete user.dataValues["password"];
+  res.status(200).send({ ...user.dataValues });
 });
 
 module.exports = router;
