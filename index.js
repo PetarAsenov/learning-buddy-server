@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require('dotenv').config()
 
 /**
  * Middlewares
@@ -159,6 +160,9 @@ app.use("/", teacherRouter);
 
 const subjectRouter = require("./routers/subjects");
 app.use("/", subjectRouter);
+
+const emailRouter = require("./routers/email");
+app.use("/", emailRouter);
 
 // Listen for connections on specified port (default is port 4000)
 const { PORT } = require("./config/constants");
