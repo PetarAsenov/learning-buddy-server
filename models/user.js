@@ -3,24 +3,53 @@ module.exports = (sequelize, DataTypes) => {
   const user = sequelize.define(
     "user",
     {
+      id: { type: DataTypes.INTEGER, primaryKey: true },
       name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       email: {
         type: DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false
-      }
+        allowNull: false,
+      },
+      image_Url: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      role: {
+        type: DataTypes.ENUM,
+        values: ["teacher", "student"],
+      },
     },
     {}
   );
-  user.associate = function(models) {
-    // associations can be defined here
+  user.associate = function (models) {
+    user.hasMany(models.session, {
+      foreignKey: "teacher_id",
+      as: "mySessions",
+    });
+    user.hasMany(models.participant, { foreignKey: "participant_id" });
+    user.hasMany(models.review, {
+      foreignKey: "reviewer_id",
+      as: "sentReviews",
+    });
+    user.hasMany(models.review, {
+      foreignKey: "teacher_id",
+      as: "receivedReviews",
+    });
+    user.belongsToMany(models.session, {
+      through: "participant",
+      foreignKey: "participant_id",
+    });
   };
   return user;
 };
